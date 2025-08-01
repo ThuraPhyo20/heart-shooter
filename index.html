@@ -2,26 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dark Love</title>
-  <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Dark Romantic Heart Shooter</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sacramento&display=swap" rel="stylesheet" />
   <style>
     body {
-      /* margin: 0;
+      margin: 0;
       overflow: hidden;
       background: linear-gradient(to bottom, #0d0d0d, #1a001a);
       cursor: crosshair;
       touch-action: none;
-      font-family: 'Segoe UI', sans-serif; */
-    
-  margin: 0;
-  overflow: hidden;
-  height: 100vh;
-  background: linear-gradient(to bottom right, #1a001a, #330033);
-  color: white;
-  font-family: 'Sacramento', cursive;
-
-
+      font-family: 'Segoe UI', sans-serif;
+      color: white;
+      height: 100vh;
     }
 
     .name {
@@ -51,6 +44,7 @@
       background-color: #ff3399;
       transform: rotate(45deg);
       animation: fly 1.2s ease-out forwards;
+      z-index: 500;
     }
 
     .heart::before,
@@ -80,13 +74,17 @@
 
     .message {
       position: absolute;
-      font-size: 16px;
-      color: #ffccff;
-      font-weight: bold;
+      font-size: 18px;
+      color: #ff77aa;
+      font-weight: 700;
       font-family: 'Sacramento', cursive;
-      text-shadow: 1px 1px 3px #660033;
+      text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.8);
       animation: floatUp 1.5s ease-out forwards;
       pointer-events: none;
+      user-select: none;
+      max-width: 150px;
+      word-wrap: break-word;
+      z-index: 10000;
     }
 
     @keyframes floatUp {
@@ -101,6 +99,8 @@
       color: #ff66cc;
       animation: floatHearts 10s linear infinite;
       pointer-events: none;
+      user-select: none;
+      z-index: 0;
     }
 
     @keyframes floatHearts {
@@ -108,7 +108,6 @@
       100% { transform: translateY(-10vh) scale(0.5); opacity: 0; }
     }
 
-    /* Sparkling stars background effect */
     .stars {
       position: fixed;
       top: 0;
@@ -119,6 +118,32 @@
       background: transparent url('https://www.transparenttextures.com/patterns/stardust.png') repeat;
       opacity: 0.1;
       z-index: 0;
+    }
+
+    /* Popup styles */
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(30, 0, 40, 0.95);
+      color: #ffccff;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 20px #ff33cc;
+      font-family: 'Sacramento', cursive;
+      font-size: 28px;
+      text-align: center;
+      z-index: 100000;
+      max-width: 80%;
+      user-select: none;
+    }
+
+    /* Responsive font size for message on small screens */
+    @media (max-width: 480px) {
+      .message {
+        font-size: 20px !important;
+      }
     }
   </style>
 </head>
@@ -132,9 +157,8 @@
   <span class="floating-heart" style="left: 70%; animation-delay: 4s;">❤️</span>
 
   <!-- Romantic Name -->
-  <h1 class="name"> Theingi Soe 😼</h1>
+  <h1 class="name">💘 For Emily 💘</h1>
 
-  <!-- Script for hearts and messages -->
   <script>
     const messages = [
       "Are you WiFi? Because I'm feeling a connection 📶",
@@ -147,8 +171,11 @@
       "I must be a loop — I keep thinking of you 🔁"
     ];
 
+    let heartCount = 0;
+    let popupShown = false;
+
     function shootHeart(x, y) {
-      // Heart
+      // Create heart
       const heart = document.createElement('div');
       heart.classList.add('heart');
       heart.style.left = `${x - 10}px`;
@@ -156,22 +183,47 @@
       document.body.appendChild(heart);
       setTimeout(() => heart.remove(), 1200);
 
-      // Message
+      // Create message with background
       const msg = document.createElement('div');
       msg.classList.add('message');
-      msg.innerText = messages[Math.floor(Math.random() * messages.length)];
+      msg.innerHTML = `<span style="
+        background: rgba(0,0,0,0.5);
+        padding: 4px 8px;
+        border-radius: 8px;
+        display: inline-block;
+      ">${messages[Math.floor(Math.random() * messages.length)]}</span>`;
       msg.style.left = `${x + 10}px`;
       msg.style.top = `${y}px`;
       document.body.appendChild(msg);
       setTimeout(() => msg.remove(), 1500);
+
+      // Count hearts
+      heartCount++;
+      if (heartCount === 5 && !popupShown) {
+        showPopup();
+        popupShown = true;
+      }
     }
 
-    // Mouse click
+    function showPopup() {
+      const popup = document.createElement('div');
+      popup.classList.add('popup');
+      popup.innerHTML = `
+        💌 Surprise!<br>
+        You clicked 5 hearts...<br>
+        That means you really care! 💖
+      `;
+      document.body.appendChild(popup);
+      // Auto remove popup after 4 seconds
+      setTimeout(() => {
+        popup.remove();
+      }, 4000);
+    }
+
     document.addEventListener('click', (e) => {
       shootHeart(e.clientX, e.clientY);
     });
 
-    // Touch tap
     document.addEventListener('touchstart', (e) => {
       const touch = e.touches[0];
       shootHeart(touch.clientX, touch.clientY);
